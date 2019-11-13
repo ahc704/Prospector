@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class Deck : MonoBehaviour {
 
-[Header("Set in Inspector")]
+    [Header("Set in Inspector")]
+    public bool startFaceUp = false;
 	//Suits
 	public Sprite suitClub;
 	public Sprite suitDiamond;
@@ -284,5 +285,128 @@ public class Deck : MonoBehaviour {
 
 	 }
 
+    private Card MakeCard(int cNum)
+    {
+        GameObject cgo = Instantiate(prefabCard) as GameObject;
+        cgo.transform.parent = deckAnchor;
+        Card card = cgo.GetComponent<Card>();
 
+        cgo.transform.localPosition = new Vector3((cNum % 13) * 3, cNum / 13 * 4, 0);
+
+        card.name = cardNames[cNum];
+        card.suit = card.name[0].ToString();
+        card.rank = int.Parse(card.name.Substring(1));
+        if(card.suit == "D" || card.suit == "H")
+        {
+            card.colS = "Red";
+            card.color = Color.red;
+        }
+
+        card.def = GetCardDefinitionByRank(card.rank);
+
+        AddDecorators(card);
+        AddPips(card);
+        AddFace(card);
+        AddBack(card);
+
+        return card;
+    }
+
+    private Sprite _tSp = null;
+    private GameObject _tGO = null;
+    private SpriteRenderer _tSR = null;
+
+    private void AddDecorators(Card card)
+    {
+        foreach(Decorator deco in decorators)
+        {
+            if(deco.type == "suit")
+            {
+                _tGO = Instantiate(prefabSprite) as GameObject;
+                _tSR = _tGO.GetComponent<SpriteRenderer>();
+                _tSR.sprite = dictSuits[card.suit];
+            } else {
+                _tGO = Instantiate(prefabSprite) as GameObject;
+                _tSR = _tGO.GetComponent<SpriteRenderer>();
+                _tSp = rankSprites[card.rank];
+                _tSR.sprite = _tSp;
+                _tSR.color = card.color;
+            }
+        }
+
+        _tSR.sortingOrder = 1;
+        _tGO.transform.SetParent(card.transform);
+        _tGO.transform.localPosition = decorators.loc;
+
+        if (deco.flip)
+        {
+            _tGO.transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+
+        if(deco.scale != 1)
+        {
+            _tGO.transform.localScale = Vector3.one * decorators.scale;
+        }
+
+        _tGO.name = deco.type;
+
+        card.decoGOs.Add(_tGO);
+    }
+
+    private void AddPips(Card card)
+    {
+        foreach(Decorator pip in card.def.pips)
+        {
+            _tGO = Instantiate(prefabSprite) as GameObject;
+            _tGO.transform.SetParent(card.transform);
+            _tGO.transform.localPosition = pip.loc;
+
+            if (pip.flip)
+            {
+                _tGO.transform.rotation = Quaternion.Euler(0, 0, 180);
+            }
+
+            if(pip.scale != 1)
+            {
+                _tGO.transform.localScale = Vector3.one * pip.scale;
+            }
+
+            _tGO.name = "pip";
+            _tSR = _tGO.GetComponent<SpriteRenderer>();
+            _tSR.sprite = dictSuits[card.suit];
+            _tSR.sortingOrder = 1;
+            card.pipGOs.Add(_tGO);
+        }
+    }
+
+    private void AddFace(Card card)
+    {
+        if(card.def.face == "")
+        {
+            return;
+        }
+
+        _tGO = Instantiate(prefabSprite) as GameObject;
+        _tSR = _tGO.GetComponent<SpriteRenderer>();
+        _tSp = GetFace(card.def.face + card.suit);
+        _tSR.sprite = _tSp;
+        _tSR.sortingOrder = 1;
+        _tGO.transform.SetParent(card.transform);
+        _tGO.transform.localPosition = Vector3.zero;
+        _tGO.name = "face";
+    }
+
+    private void AddBack(Card card)
+    {
+        _tGO = Instantiate(prefabSprite) as GameObject;
+        _tSR = _tGO.GetComponent<SpriteRenderer>();
+        _tSR.sprite = cardBack;
+        _tGO.transform.SetParent(card.transform);
+        _tGO.transform.localPosition = Vector3.zero;
+        _tSR.sortingOrder = 2;
+        _tGO.name = "back";
+        card.back = _tGO;
+        card.faceUp = startFaceUp;
+
+    }
 } // Deck class
