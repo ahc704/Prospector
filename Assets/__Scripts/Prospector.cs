@@ -57,7 +57,7 @@ public class Prospector : MonoBehaviour {
             tCP = tCD as CardProspector;
             lCD.Add(tCP);
         }
-        return(lCD);
+        return lCD;
     }
 
     CardProspector Draw()
@@ -91,6 +91,89 @@ public class Prospector : MonoBehaviour {
             cp.state = eCardState.tableau;
             tableau.Add(cp);
         }
+
+        MoveToTarget(Draw());
+
+        UpdateDrawPile();
     }
+
+    void MoveToDiscard(CardProspector cd)
+    {
+        cd.state = eCardState.discard;
+        discardPile.Add(cd);
+        cd.transform.parent = layoutAnchor;
+
+        cd.transform.localPosition = new Vector3(
+            layout.multiplier.x * layout.discardPile.x,
+            layout.multiplier.y * layout.discardPile.y,
+            -layout.discardPile.layerID + 0.5f);
+        cd.faceUp = true;
+        cd.SetSortingLayerNames(layout.discardPile.layerName);
+        cd.setSortOrder(-100 + discardPile.Count);
+
+        cd.transform.localPosition = new Vector3(
+           layout.multiplier.x * layout.discardPile.x,
+           layout.multiplier.y * layout.discardPile.y,
+           -layout.discardPile.layerID);
+        cd.faceUp = true;
+        cd.SetSortingLayerNames(layout.discardPile.layerName);
+        cd.setSortOrder(0);
+    }
+
+    void MoveToTarget(CardProspector cd)
+    {
+        if (target != null) MoveToDiscard(target);
+        target = cd;
+        cd.state = eCardState.target;
+        cd.transform.parent = layoutAnchor;
+        cd.transform.localPosition = new Vector3(
+            layout.multiplier.x * layout.discardPile.x,
+            layout.multiplier.y * layout.discardPile.y,
+            -layout.discardPile.layerID);
+
+        cd.faceUp = true;
+        cd.SetSortingLayerNames(layout.discardPile.layerName);
+        cd.setSortOrder(0);
+    }
+
+    void UpdateDrawPile()
+    {
+        CardProspector cd;
+        for(int i=0; i<drawPile.Count; i++)
+        {
+            cd = drawPile[i];
+            cd.transform.parent = layoutAnchor;
+            Vector2 dpStagger = layout.drawPile.stagger;
+            cd.transform.localPosition = new Vector3(
+             layout.multiplier.x * (layout.drawPile.x + i*dpStagger.x),
+             layout.multiplier.y * (layout.drawPile.y + i*dpStagger.y),
+             -layout.drawPile.layerID + 0.1f*i);
+
+            cd.faceUp = false;
+            cd.state = eCardState.drawpile;
+
+            cd.SetSortingLayerNames(layout.drawPile.layerName);
+            cd.setSortOrder(-10 * i);
+        }
+    }
+
+    public void CardClicked(CardProspector cd)
+    {
+        switch (cd.state)
+        {
+            case eCardState.target:
+                break;
+
+            case eCardState.drawpile:
+                MoveToDiscard(target);
+                MoveToTarget(Draw());
+                UpdateDrawPile();
+                break;
+
+            case eCardState.tableau:
+                break;
+        }
+    }
+
 
 }

@@ -32,6 +32,10 @@ public class Card : MonoBehaviour
         }
     }
 
+    virtual public void OnMouseUpAsButton()
+    {
+        print(name);
+    }
 
     // Use this for initialization
     void Start()
