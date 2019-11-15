@@ -11,7 +11,7 @@ public class Prospector : MonoBehaviour {
 
 	[Header("Set in Inspector")]
 	public TextAsset deckXML;
-    public TextAsset LayoutXML;
+    public TextAsset layoutXML;
     public float xOFFset = 3;
     public float yOffset = -2.5f;
     public Vector3 layoutCenter;
@@ -46,6 +46,7 @@ public class Prospector : MonoBehaviour {
         }
         int highScore = ScoreManager.HIGH_SCORE;
         string hScore = "High Score: " + Utils.AddCommasToNumber(highScore);
+        go.GetComponent<Text>().text = hScore;
 
         go = GameObject.Find("GameOver");
         if(go != null)
@@ -82,7 +83,7 @@ public class Prospector : MonoBehaviour {
         }
 
         layout = GetComponent<Layout>();
-        layout.ReadLayout(LayoutXML.text);
+        layout.ReadLayout(layoutXML.text);
 
         drawPile = ConvertListCardsToListCardProspectors(deck.cards);
         LayoutGame();
@@ -94,7 +95,7 @@ public class Prospector : MonoBehaviour {
         CardProspector tCP;
         foreach(Card tCD in lCD){
             tCP = tCD as CardProspector;
-            lCD.Add(tCP);
+            lCP.Add(tCP);
         }
         return lCP;
     }
@@ -128,6 +129,7 @@ public class Prospector : MonoBehaviour {
             cp.layoutID = tSD.id;
             cp.SlotDef = tSD;
             cp.state = eCardState.tableau;
+            cp.SetSortingLayerNames(tSD.layerName);
             tableau.Add(cp);
         }
 
@@ -361,7 +363,7 @@ public class Prospector : MonoBehaviour {
                     fsRun.fontSizes = new List<float>(new float[] { 28, 36, 4 });
                     fsRun = null;
                 }
-                break:
+                break;
             case eScoreEvent.mine:
                 FloatingScore fs;
                 Vector2 p0 = Input.mousePosition;
