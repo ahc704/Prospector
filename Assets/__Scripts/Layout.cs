@@ -24,7 +24,7 @@ public class Layout : MonoBehaviour
     public List<SlotDef> slotDefs;
     public SlotDef drawPile;
     public SlotDef discardPile;
-    public string[] sortingLayerNames = new string[] { "Row 0", "Row 1", "Row 2", "Row 3", "Discard", "Draw" };
+    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Discard", "Draw" };
 
     public void ReadLayout(string xmlText)
     {
@@ -67,6 +67,7 @@ public class Layout : MonoBehaviour
                             tSD.hiddenBy.Add(int.Parse(s));
                         }
                     }
+                    slotDefs.Add(tSD);
                     break;
 
                 case "drawpile":
