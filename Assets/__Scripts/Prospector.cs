@@ -96,7 +96,7 @@ public class Prospector : MonoBehaviour {
             tCP = tCD as CardProspector;
             lCD.Add(tCP);
         }
-        return lCD;
+        return lCP;
     }
 
     CardProspector Draw()
