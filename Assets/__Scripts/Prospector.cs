@@ -95,7 +95,7 @@ public class Prospector : MonoBehaviour {
         CardProspector tCP;
         foreach(Card tCD in lCD){
             tCP = tCD as CardProspector;
-            lCD.Add(tCP);
+            lCP.Add(tCP);
         }
         return lCP;
     }
@@ -129,6 +129,7 @@ public class Prospector : MonoBehaviour {
             cp.layoutID = tSD.id;
             cp.SlotDef = tSD;
             cp.state = eCardState.tableau;
+            cp.SetSortingLayerNames(tSD.layerName);
             tableau.Add(cp);
         }
 
