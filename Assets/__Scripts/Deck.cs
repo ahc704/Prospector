@@ -318,39 +318,41 @@ public class Deck : MonoBehaviour {
 
     private void AddDecorators(Card card)
     {
-        foreach(Decorator deco in decorators)
+        foreach (Decorator deco in decorators)
         {
-            if(deco.type == "suit")
+            if (deco.type == "suit")
             {
                 _tGO = Instantiate(prefabSprite) as GameObject;
                 _tSR = _tGO.GetComponent<SpriteRenderer>();
                 _tSR.sprite = dictSuits[card.suit];
-            } else {
+            }
+            else
+            {
                 _tGO = Instantiate(prefabSprite) as GameObject;
                 _tSR = _tGO.GetComponent<SpriteRenderer>();
                 _tSp = rankSprites[card.rank];
                 _tSR.sprite = _tSp;
                 _tSR.color = card.color;
             }
+
+            _tSR.sortingOrder = 1;
+            _tGO.transform.SetParent(card.transform);
+            _tGO.transform.localPosition = deco.loc;
+
+            if (deco.flip)
+            {
+                _tGO.transform.rotation = Quaternion.Euler(0, 0, 180);
+            }
+
+            if (deco.scale != 1)
+            {
+                _tGO.transform.localScale = Vector3.one * deco.scale;
+            }
+
+            _tGO.name = deco.type;
+
+            card.decoGOs.Add(_tGO);
         }
-
-        _tSR.sortingOrder = 1;
-        _tGO.transform.SetParent(card.transform);
-        _tGO.transform.localPosition = decorators.loc;
-
-        if (deco.flip)
-        {
-            _tGO.transform.rotation = Quaternion.Euler(0, 0, 180);
-        }
-
-        if(deco.scale != 1)
-        {
-            _tGO.transform.localScale = Vector3.one * decorators.scale;
-        }
-
-        _tGO.name = deco.type;
-
-        card.decoGOs.Add(_tGO);
     }
 
     private void AddPips(Card card)

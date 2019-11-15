@@ -48,14 +48,14 @@ public class ScoreManager : MonoBehaviour
     {
         try
         {
-            S.EVENT(evt);
+            S.Event(evt);
         } catch (System.NullReferenceException nre)
         {
             Debug.LogError("ScoreManager:EVENT() called while S=null. \n" + nre);
         }
     }
 
-    void EVENT(eScoreEvent evt)
+    void Event(eScoreEvent evt)
     {
         switch (evt)
         {
@@ -93,7 +93,7 @@ public class ScoreManager : MonoBehaviour
                 break;
 
             default:
-                print ("Score: " + score + " scoreRun: " + scoreRun + "chain:" chain);
+                print ("Score: " + score + " scoreRun: " + scoreRun + "chain:" + chain);
                 break;
         }
     }
