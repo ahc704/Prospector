@@ -188,14 +188,6 @@ public class Prospector : MonoBehaviour {
         cd.faceUp = true;
         cd.SetSortingLayerNames(layout.discardPile.layerName);
         cd.setSortOrder(-100 + discardPile.Count);
-
-        cd.transform.localPosition = new Vector3(
-           layout.multiplier.x * layout.discardPile.x,
-           layout.multiplier.y * layout.discardPile.y,
-           -layout.discardPile.layerID);
-        cd.faceUp = true;
-        cd.SetSortingLayerNames(layout.discardPile.layerName);
-        cd.setSortOrder(0);
     }
 
     void MoveToTarget(CardProspector cd)
@@ -243,6 +235,7 @@ public class Prospector : MonoBehaviour {
                 break;
 
             case eCardState.drawpile:
+            default:
                 MoveToDiscard(target);
                 MoveToTarget(Draw());
                 UpdateDrawPile();
